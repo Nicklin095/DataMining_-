@@ -10,21 +10,4 @@ count = 1;
         end
         count = count + 1;
     end
-%     for i= 1:num
-%         if date{i,2} == 1;
-%            if i ~= num
-%                if date{i+1,2} == 1;
-%                   date{i,3} = date{i,2} + date{i+1,2};
-%                   date{i+1,2} = 0;
-%                else
-%                   date{i,3} = 1;
-%                   
-%                end
-%            else
-%                date{i,3} = 1;
-%            end
-%         else
-%             date{i,3} = 1;
-%         end
-%     end
 end
