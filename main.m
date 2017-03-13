@@ -13,21 +13,29 @@ for runNum = 1:monthDate
         [ result ] = dataString( dataName );
         load(result);
         %---------------------all time------------------------------
-        [allDataIndex] = Function_Preprocess( data );
-        [ allDataIndexChange ] = allDataDifferent( allDataIndex );
-        [ allRunTimeResult ] = allRunTime( data,allDataIndexChange );  
-        [ allStart_end_time ] = timeSeparate(allRunTimeResult);
+        [allDataIndex] = Function_Preprocess( data ); %all data index log
+        [ allDataIndexChange ] = allDataDifferent( allDataIndex ); %all data index log change
+        [ allRunTimeResult ] = allRunTime( data,allDataIndexChange );  %all data beging-time and end-time
+        [ allStart_end_time ] = timeSeparate(allRunTimeResult); %separate beging-time and end-time
         %-----------------------------------------------------------
         
         %-------------------------real run time----------------------
-        [program,programIndex] = funciton_Preprocess(data); 
-        [ programChangeindex ] = programDifferent( programIndex );  
-        [begin_end_time,programData] = Time(data,programChangeindex,programIndex);         
-        [ Start_end_time ] = timeSeparate(begin_end_time);
+        [program,programIndex] = funciton_Preprocess(data); %run time data index log
+        [ programChangeindex ] = programDifferent( programIndex );  %run time data index log change
+        [begin_end_time,programData] = Time(data,programChangeindex,programIndex); %run time data beging-time and end-time        
+        [ Start_end_time ] = timeSeparate(begin_end_time); %separate run time data's beging-time and end-time   
         %-----------------------------------------------------------
-        [runTimeRecord,ansallTime] = calculateTime(Start_end_time,programChangeindex,program,allStart_end_time);
-        [newTable,cIndex]=separateRunTime(runTimeRecord);
+        [runTimeRecord,ansallTime] = calculateTime(Start_end_time,programChangeindex,program,allStart_end_time);%calculate beging-time and end-time 
+        [newTable,cIndex] = separateRunTime(runTimeRecord);% separate run time into data name and data chnage index
         
+        %------------------------------------------------------
+        % use newTable and runTimeRecord to calculate runTimeRecord
+        % sum runTimeRecord = run time
+        % ansallTime is the total time
+        % pause time = ansallTime - run time
+        % 
+        % calculate Availability = run time/(pause time + run time)
+        %------------------------------------------------------
         [r c] = size(begin_end_time);
         cIndex{size(cIndex,1)+1,1} = r+1;
         if runNum ~= 1
