@@ -11,6 +11,7 @@ function [ Index_change,change ] = allDataDifferent( data )
         Index_c = cell(1,1);
         change = zeros(1,1);
         for j=1:1:M
+            
             if 	ischar(data{j,1}) == 0 %if data is character
                 kind = 1;
                 if count == 1
@@ -24,7 +25,7 @@ function [ Index_change,change ] = allDataDifferent( data )
                         Index_n = data{j,1};
                         change(count,1) = 1;
                         if ~isempty(data{j,1})
-                            Index_change{count_index_change,1} =  j;
+                            Index_change{count_index_change,1} =  j
                         end
                         count_index_change = count_index_change +1;
                     end
@@ -43,7 +44,7 @@ function [ Index_change,change ] = allDataDifferent( data )
                         Index_c = data{j,1};
                         change(count,1) = 1;
                         if ~isempty(data{j,1})
-                            Index_change{count_index_change,1} =  j;
+                            Index_change{count_index_change,1} =  j
                         end
                         count_index_change = count_index_change +1;
                     end

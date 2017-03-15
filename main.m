@@ -1,14 +1,17 @@
     clear all
-    global beginName endName oldTable
-    monthDate = 30;
-    beginName = 'DMG01_A_201612';
+    global beginName endName oldTable realFirstData
+    firstDate = 1;
+    monthDate = 28;
+    beginName = 'DMG01_A_201702';
     endName = '.mat';
     [ date ] = checkData(monthDate,beginName,endName);   
-    oldTable=[];
-for runNum = 1:monthDate
+    oldTable = [];
+    realFirstData = 0;
+for runNum = firstDate:monthDate
     runNum
-   
+    
     if date{runNum,2} == 0
+        realFirstData = realFirstData + 1;
         dataName = [beginName num2str(runNum) endName];
         [ result ] = dataString( dataName );
         load(result);
@@ -38,9 +41,11 @@ for runNum = 1:monthDate
         %------------------------------------------------------
         [r c] = size(begin_end_time);
         cIndex{size(cIndex,1)+1,1} = r+1;
-        if runNum ~= 1
+        if realFirstData ~= 1
             load('oldTable.mat');
             [R C] = size(oldTable);
+        else
+            [R C] = size(newTable);
         end
         oldTable = [oldTable;newTable];
         count = 1;        
@@ -63,16 +68,23 @@ for runNum = 1:monthDate
                       else
                          pauseTime = ansallTime{i,1};
                       end
-                      Availability = (runTime/(runTime+pauseTime))*100;
-                      if strcmp(oldTable{R,1},allDataIndex{end,1}) == 1 & programIndex{end,1} == size(data,1)
-                         ansTime{end,1} = ansTime{end,1} + runTime;
-                         ansTime{end,2} = ansTime{end,2} + pauseTime;
-                         Availability = (ansTime{end,1}/(ansTime{end,1}+ansTime{end,2}))*100;
-                         ansTime{end,3} = Availability;
-                      else
-                          ansTime{m+1,1} = runTime;
-                          ansTime{m+1,2} = pauseTime;
-                          ansTime{m+1,3} = Availability;
+                      
+                      if j == cIndex{i+1,1}-1
+                          if strcmp(oldTable{R,1},allDataIndex{end,1}) == 1 & programIndex{end,1} == size(data,1)
+                             ansTime{end,3} = allStart_end_time{i+1+(i-1),1};
+                             ansTime{end,4} = [allStart_end_time{i+1+(i-1),7}{1,1} ':' allStart_end_time{i+1+(i-1),8}{1,1} ':' allStart_end_time{i+1+(i-1),9}{1,1}];
+                             ansTime{end,5} = ansTime{end,5} + runTime;
+                             ansTime{end,6} = ansTime{end,6} + pauseTime;
+                             Availability = (ansTime{end,5}/(ansTime{end,5}+ansTime{end,6}))*100;
+                             ansTime{end,7} = Availability;
+                          else
+                              Availability = (runTime/(runTime+pauseTime))*100;
+                              ansTime{m+1,1} = allStart_end_time{i+(i-1),1}; ansTime{m+1,2} = [allStart_end_time{i+(i-1),7}{1,1} ':' allStart_end_time{i+(i-1),8}{1,1} ':' allStart_end_time{i+(i-1),9}{1,1}];
+                              ansTime{m+1,3} = allStart_end_time{i+1+(i-1),1}; ansTime{m+1,4} = [allStart_end_time{i+1+(i-1),7}{1,1} ':' allStart_end_time{i+1+(i-1),8}{1,1} ':' allStart_end_time{i+1+(i-1),9}{1,1}];
+                              ansTime{m+1,5} = runTime;
+                              ansTime{m+1,6} = pauseTime;
+                              ansTime{m+1,7} = Availability;
+                          end
                       end
                    else
                       runTime = runTime + value;
@@ -81,21 +93,22 @@ for runNum = 1:monthDate
                       else
                          pauseTime = ansallTime{i,1};
                       end
-                      Availability = (runTime/(runTime+pauseTime))*100;
-                      ansTime{1,1} = runTime;
-                      ansTime{1,2} = pauseTime;
-                      ansTime{1,3} = Availability;
+                      if j == cIndex{i+1,1}-1
+                          Availability = (runTime/(runTime+pauseTime))*100;
+                          ansTime{1,1} = allStart_end_time{i+(i-1),1}; ansTime{1,2} = [allStart_end_time{i+(i-1),7}{1,1} ':' allStart_end_time{i+(i-1),8}{1,1} ':' allStart_end_time{i+(i-1),9}{1,1}];
+                          ansTime{1,3} = allStart_end_time{i+1+(i-1),1}; ansTime{1,4} = [allStart_end_time{i+1+(i-1),7}{1,1} ':' allStart_end_time{i+1+(i-1),8}{1,1} ':' allStart_end_time{i+1+(i-1),9}{1,1}];
+                          ansTime{1,5} = runTime;
+                          ansTime{1,6} = pauseTime;
+                          ansTime{1,7} = Availability;
+                      end
                    end     
                 end
             end
-
-            if count == i
                save('oldTable','oldTable');
                save(name,'ansTime');
                count = count + 1;
-            end
         end
 
     end
-    clearvars -except beginName endName runNum date monthDate
+    clearvars -except beginName endName runNum date monthDate realFirstData oldTable
 end

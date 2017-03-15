@@ -2,6 +2,7 @@ function [result,dataStatus] = Time(rawData,changeIndex,programIndex)
 % DMG01_Function = inputData    
 [M N] = size(rawData);
 [m n] = size(changeIndex);
+tmp = '$MDI.H';
     count = 1;
 for k = 1:m
     indexCount = 1;
@@ -9,7 +10,7 @@ for k = 1:m
     if indexCount == 1
         for j = count:m
             for i = programIndex{changeIndex{j,1},1}:-1:1
-                if strcmp(rawData(i,7),'START') == 1
+                if strcmp(rawData(i+1,7),'START') == 1 & isempty(findstr(rawData{i+1,4},tmp)) == 1
                    dataStatus{count,2} = i;        
                    if ~isempty(dataStatus{count,2})
                       break;
@@ -31,8 +32,8 @@ for k = 1:m
         dataStatus{1,1} = programIndex{1,1};
         [r c] = size(dataStatus);
         for jj = count-1:m
-            for ii =  programIndex{changeIndex{jj,1}+1,1}:M
-                if strcmp(rawData{ii+1,7},'START') == 1
+            for ii =  programIndex{changeIndex{jj,1},1}:M
+                if strcmp(rawData{ii,7},'START') == 1 & isempty(findstr(rawData{ii,4},tmp))==1
                    testCount = testCount + 1;
                    dataStatus{count,1} = ii;
                    if ~isempty(dataStatus{count,1})
@@ -55,7 +56,7 @@ for k = 1:m
         if k == m
            [c r] = size(dataStatus);
            for i = programIndex{size(programIndex,1)}:-1:1
-               if strcmp(rawData{i,7},'START') == 1
+               if strcmp(rawData{i,7},'START') == 1 & isempty(findstr(rawData{i,4},tmp))==1
                   dataStatus{count,2} = i;
                    if ~isempty(dataStatus{count,2})
                       break;

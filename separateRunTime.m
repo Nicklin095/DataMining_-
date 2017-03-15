@@ -1,5 +1,6 @@
 function [newTable,cIndex]=separateRunTime(runTime)
 count = 1;
+k = 1;
 [r c] = size(runTime);
     for i = 1:r
         programName{1,1} = runTime{i,c};
@@ -15,11 +16,12 @@ count = 1;
     count = 1;
     cIndex = cell(size(newTable,1),1);
     for i = 1:size(newTable,1)
-        for j = 1:r
+        for j = k:r
             if strcmp(newTable{i,1},runTime{j,2}) == 1
                 cIndex{count,1} = j;
                 count = count + 1;
             end
+            k = k + 1;
             if ~isempty(cIndex{i,1})
                 break;
             end
